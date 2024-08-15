@@ -4,8 +4,7 @@
   "author": "",
   "copyright": "",
   "scripts": {
-    "dev": "zup dev",
-    "test": "zup test"
+    "dev": "zup dev"
   },
   "dependencies": {
     "zuplo": "latest"

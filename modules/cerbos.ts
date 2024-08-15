@@ -1,4 +1,4 @@
-import {ZuploContext, ZuploRequest} from "@zuplo/runtime";
+import { ZuploContext, ZuploRequest } from "@zuplo/runtime";
 
 type MyPolicyOptionsType = {
   myOption: any;
