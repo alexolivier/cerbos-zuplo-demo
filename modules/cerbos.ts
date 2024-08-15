@@ -1,19 +1,17 @@
 import { ZuploContext, ZuploRequest } from "@zuplo/runtime";
 import HTTP from "./third-party/@cerbos/http";
 
-type MyPolicyOptionsType = {
-  myOption: any;
+type CerbosOptionsType = {
+  pdpUrl: string;
 };
 
 export default async function policy(
   request: ZuploRequest,
   context: ZuploContext,
-  options: MyPolicyOptionsType,
+  options: CerbosOptionsType,
   policyName: string
 ) {
-  const cerbos = new HTTP.HTTP(
-    "https://cerbos-zuplo-demo-piy6w63peq-uc.a.run.app"
-  );
+  const cerbos = new HTTP.HTTP(options.pdpUrl);
 
   const checkPermissions = await cerbos.checkResource({
     principal: {
