@@ -7,8 +7,7 @@ resourcePolicy:
   resource: "route"
   rules:
     - actions:
-        - create
-        - read
+        - GET
       effect: EFFECT_ALLOW
       roles:
         - user
