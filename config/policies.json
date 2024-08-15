@@ -1,0 +1,17 @@
+{
+  "policies": [
+    {
+      "handler": {
+        "export": "AxiomaticsAuthZInboundPolicy",
+        "module": "$import(@zuplo/runtime)",
+        "options": {
+          "pdpPassword": "$env(PDP_PASSWORD)",
+          "pdpUrl": "https://pdp.example.com",
+          "pdpUsername": "pdp-user"
+        }
+      },
+      "name": "axiomatics-authz-inbound",
+      "policyType": "axiomatics-authz-inbound"
+    }
+  ]
+}
