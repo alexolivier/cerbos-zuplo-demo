@@ -5,7 +5,8 @@
         "export": "default",
         "module": "$import(./modules/cerbos)",
         "options": {
-          "pdpUrl": "https://cerbos-zuplo-demo-piy6w63peq-uc.a.run.app"
+          "pdpUrl": "https://cerbos-zuplo-demo-piy6w63peq-uc.a.run.app",
+          "roleClaimName": "roles"
         }
       },
       "name": "cerbos-inbound",
