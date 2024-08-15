@@ -1,8 +1,10 @@
 import { ZuploContext, ZuploRequest } from "@zuplo/runtime";
-import HTTP from "./third-party/@cerbos/http";
+import Cerbos from "./third-party/@cerbos/http";
+import * as jose from "jose";
 
 type CerbosOptionsType = {
   pdpUrl: string;
+  tokenHeaderName: string;
 };
 
 export default async function policy(
@@ -11,11 +13,20 @@ export default async function policy(
   options: CerbosOptionsType,
   policyName: string
 ) {
-  const cerbos = new HTTP.HTTP(options.pdpUrl);
+  const { tokenHeaderName = "Authorization", pdpUrl } = options;
+
+  const authZHeader = request.headers.get(tokenHeaderName);
+  if (!authZHeader) return new Response(`Unauthorized`, { status: 401 });
+
+  const tokenString = authZHeader.split(" ")[1];
+  const token = jose.decodeJwt(tokenString);
+
+  const cerbos = new Cerbos.HTTP(pdpUrl);
+  const url = new URL(request.url);
 
   const checkPermissions = await cerbos.checkResource({
     principal: {
-      id: "some-id",
+      id: token.sub!,
       roles: ["user"],
       attr: {},
     },
@@ -23,13 +34,19 @@ export default async function policy(
       kind: "route",
       id: context.requestId,
       attr: {
+        protocol: url.protocol,
         method: request.method,
-        path: request.url,
-        params: JSON.parse(JSON.stringify(request.params)),
-        headers: JSON.parse(JSON.stringify(request.headers)),
+        host: url.host,
+        pathname: url.pathname,
+        search: url.search,
       },
     },
     actions: [request.method],
+    auxData: {
+      jwt: {
+        token: tokenString,
+      },
+    },
   });
 
   if (!checkPermissions.isAllowed(request.method)) {
