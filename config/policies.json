@@ -2,16 +2,16 @@
   "policies": [
     {
       "handler": {
-        "export": "AxiomaticsAuthZInboundPolicy",
+        "export": "RateLimitInboundPolicy",
         "module": "$import(@zuplo/runtime)",
         "options": {
-          "pdpPassword": "$env(PDP_PASSWORD)",
-          "pdpUrl": "https://pdp.example.com",
-          "pdpUsername": "pdp-user"
+          "rateLimitBy": "ip",
+          "requestsAllowed": 2,
+          "timeWindowMinutes": 1
         }
       },
-      "name": "axiomatics-authz-inbound",
-      "policyType": "axiomatics-authz-inbound"
+      "name": "rate-limit-inbound",
+      "policyType": "rate-limit-inbound"
     }
   ]
 }
