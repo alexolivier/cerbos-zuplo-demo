@@ -23,7 +23,7 @@
           },
           "policies": {
             "inbound": [
-              "rate-limit-inbound"
+              "cerbos-inbound"
             ]
           }
         },

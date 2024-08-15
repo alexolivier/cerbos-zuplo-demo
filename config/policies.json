@@ -2,16 +2,14 @@
   "policies": [
     {
       "handler": {
-        "export": "RateLimitInboundPolicy",
-        "module": "$import(@zuplo/runtime)",
+        "export": "default",
+        "module": "$import(./modules/cerbos)",
         "options": {
-          "rateLimitBy": "ip",
-          "requestsAllowed": 2,
-          "timeWindowMinutes": 1
+          "config1": "YOUR_VALUE"
         }
       },
-      "name": "rate-limit-inbound",
-      "policyType": "rate-limit-inbound"
+      "name": "cerbos-inbound",
+      "policyType": "custom-code-inbound"
     }
   ]
 }
