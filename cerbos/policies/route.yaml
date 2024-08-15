@@ -11,3 +11,9 @@ resourcePolicy:
       effect: EFFECT_ALLOW
       roles:
         - ANONYMOUS
+
+    - actions:
+        - GET
+      effect: EFFECT_ALLOW
+      roles:
+        - ADMIN
