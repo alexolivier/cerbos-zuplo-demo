@@ -1,4 +1,5 @@
 import { ZuploContext, ZuploRequest } from "@zuplo/runtime";
+import { HTTP } from "./third-party/@cerbos/http";
 
 type MyPolicyOptionsType = {
   myOption: any;
@@ -10,9 +11,7 @@ export default async function policy(
   options: MyPolicyOptionsType,
   policyName: string
 ) {
-  // your policy code goes here, and can use the options to perform any
-  // configuration
-  // See the docs: https://www.zuplo.com/docs/policies/custom-code-inbound
+  const cerbos = new HTTP("");
 
   return request;
 }
