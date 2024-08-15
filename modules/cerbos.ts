@@ -5,6 +5,8 @@ import * as jose from "jose";
 type CerbosOptionsType = {
   pdpUrl: string;
   tokenHeaderName: string;
+  defaultRole?: string;
+  roleClaimName?: string;
 };
 
 export default async function policy(
@@ -13,7 +15,12 @@ export default async function policy(
   options: CerbosOptionsType,
   policyName: string
 ) {
-  const { tokenHeaderName = "Authorization", pdpUrl } = options;
+  const {
+    tokenHeaderName = "Authorization",
+    defaultRole = "ANONYMOUS",
+    pdpUrl,
+    roleClaimName,
+  } = options;
 
   const authZHeader = request.headers.get(tokenHeaderName);
   if (!authZHeader) return new Response(`Unauthorized`, { status: 401 });
@@ -24,11 +31,23 @@ export default async function policy(
   const cerbos = new Cerbos.HTTP(pdpUrl);
   const url = new URL(request.url);
 
+  let roles = [defaultRole];
+  if (roleClaimName) {
+    const roleClaim = token[roleClaimName];
+    if (roleClaim) {
+      if (Array.isArray(roleClaim)) {
+        roles = roleClaim;
+      } else {
+        roles = [JSON.stringify(roleClaim)];
+      }
+    }
+  }
+
   const allowed = await cerbos.isAllowed({
     requestId: context.requestId,
     principal: {
       id: token.sub!,
-      roles: ["user"],
+      roles,
       attr: {},
     },
     resource: {

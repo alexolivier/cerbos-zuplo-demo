@@ -10,4 +10,4 @@ resourcePolicy:
         - GET
       effect: EFFECT_ALLOW
       roles:
-        - user
+        - ANONYMOUS
