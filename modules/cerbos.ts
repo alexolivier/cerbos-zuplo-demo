@@ -24,7 +24,8 @@ export default async function policy(
   const cerbos = new Cerbos.HTTP(pdpUrl);
   const url = new URL(request.url);
 
-  const checkPermissions = await cerbos.checkResource({
+  const allowed = await cerbos.isAllowed({
+    requestId: context.requestId,
     principal: {
       id: token.sub!,
       roles: ["user"],
@@ -32,7 +33,7 @@ export default async function policy(
     },
     resource: {
       kind: "route",
-      id: context.requestId,
+      id: url.pathname,
       attr: {
         protocol: url.protocol,
         method: request.method,
@@ -41,15 +42,15 @@ export default async function policy(
         search: url.search,
       },
     },
-    actions: [request.method],
-    auxData: {
-      jwt: {
-        token: tokenString,
-      },
-    },
+    action: request.method,
+    // auxData: {
+    //   jwt: {
+    //     token: tokenString,
+    //   },
+    // },
   });
 
-  if (!checkPermissions.isAllowed(request.method)) {
+  if (!allowed) {
     return new Response(`Unauthorized`, { status: 401 });
   }
 
