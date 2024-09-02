@@ -1,10 +1,8 @@
 import { ZuploContext, ZuploRequest } from "@zuplo/runtime";
 import Cerbos from "./third-party/@cerbos/http";
-import * as jose from "jose";
 
 type CerbosOptionsType = {
   pdpUrl: string;
-  tokenHeaderName: string;
   defaultRole?: string;
   roleClaimName?: string;
 };
@@ -16,24 +14,22 @@ export default async function policy(
   policyName: string
 ) {
   const {
-    tokenHeaderName = "Authorization",
     defaultRole = "ANONYMOUS",
     pdpUrl,
     roleClaimName,
   } = options;
 
-  const authZHeader = request.headers.get(tokenHeaderName);
-  if (!authZHeader) return new Response(`Unauthorized`, { status: 401 });
-
-  const tokenString = authZHeader.split(" ")[1];
-  const token = jose.decodeJwt(tokenString);
+  
+  if (!request.user) return new Response(`Unauthorized`, { status: 401 });
+  const tokenString = request.headers.get("Authorization").split(" ")[1];
+  
 
   const cerbos = new Cerbos.HTTP(pdpUrl);
   const url = new URL(request.url);
 
   let roles = [defaultRole];
   if (roleClaimName) {
-    const roleClaim = token[roleClaimName];
+    const roleClaim = request.user.data[roleClaimName];
     if (roleClaim) {
       if (Array.isArray(roleClaim)) {
         roles = roleClaim;
@@ -46,7 +42,7 @@ export default async function policy(
   const allowed = await cerbos.isAllowed({
     requestId: context.requestId,
     principal: {
-      id: token.sub!,
+      id: request.user.sub,
       roles,
       attr: {},
     },

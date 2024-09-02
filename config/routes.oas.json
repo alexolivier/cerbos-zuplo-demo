@@ -10,7 +10,7 @@
         "pathMode": "open-api"
       },
       "get": {
-        "summary": "New Route",
+        "summary": "Demo Cerbos Route",
         "description": "Lorem ipsum dolor sit amet, **consectetur adipiscing** elit, sed do `eiusmod tempor` incididunt ut labore et dolore magna aliqua.",
         "x-zuplo-route": {
           "corsPolicy": "none",
@@ -23,6 +23,7 @@
           },
           "policies": {
             "inbound": [
+              "open-id-jwt-auth-inbound",
               "cerbos-inbound"
             ]
           }
