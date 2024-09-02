@@ -1,5 +1,5 @@
 import { ZuploContext, ZuploRequest } from "@zuplo/runtime";
-import Cerbos from "./third-party/@cerbos/http";
+import { HTTP as Cerbos } from "@cerbos/http";
 
 type CerbosOptionsType = {
   pdpUrl: string;
@@ -13,18 +13,15 @@ export default async function policy(
   options: CerbosOptionsType,
   policyName: string
 ) {
-  const {
-    defaultRole = "ANONYMOUS",
-    pdpUrl,
-    roleClaimName,
-  } = options;
+  const { defaultRole = "ANONYMOUS", pdpUrl, roleClaimName } = options;
+  const tokenHeader = request.headers.get("Authorization");
+  if (!request.user || !tokenHeader) {
+    return new Response(`Unauthorized`, { status: 401 });
+  }
 
-  
-  if (!request.user) return new Response(`Unauthorized`, { status: 401 });
-  const tokenString = request.headers.get("Authorization").split(" ")[1];
-  
+  const tokenString = tokenHeader.split(" ")[1];
 
-  const cerbos = new Cerbos.HTTP(pdpUrl);
+  const cerbos = new Cerbos(pdpUrl);
   const url = new URL(request.url);
 
   let roles = [defaultRole];

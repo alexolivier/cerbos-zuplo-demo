@@ -4,14 +4,11 @@
   "author": "",
   "copyright": "",
   "scripts": {
-    "dev": "zup dev",
-    "bundle": "node ./bundle.mjs"
+    "dev": "zup dev"
   },
   "dependencies": {
     "@cerbos/http": "^0.19.1",
     "zuplo": "latest"
   },
-  "devDependencies": {
-    "esbuild": "^0.23.0"
-  }
+  "devDependencies": {}
 }
