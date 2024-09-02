@@ -19,10 +19,9 @@ export default async function policy(
     return new Response(`Unauthorized`, { status: 401 });
   }
 
-  const tokenString = tokenHeader.split(" ")[1];
-
   const cerbos = new Cerbos(pdpUrl);
   const url = new URL(request.url);
+  const tokenString = tokenHeader.split(" ")[1];
 
   let roles = [defaultRole];
   if (roleClaimName) {
