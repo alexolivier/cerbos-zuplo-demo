@@ -59,14 +59,15 @@ export default async function policy(
         host: url.host,
         pathname: url.pathname,
         search: url.search,
+        policyName,
       },
     },
     action: request.method,
-    // auxData: {
-    //   jwt: {
-    //     token: tokenString,
-    //   },
-    // },
+    auxData: {
+      jwt: {
+        token: tokenString,
+      },
+    },
   });
 
   if (!allowed) {

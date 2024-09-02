@@ -7,13 +7,22 @@ resourcePolicy:
   resource: "route"
   rules:
     - actions:
-        - GET
+        - "*"
       effect: EFFECT_ALLOW
       roles:
-        - ANONYMOUS
+        - DENY
 
     - actions:
         - GET
       effect: EFFECT_ALLOW
       roles:
         - ADMIN
+
+    - actions:
+        - GET
+      effect: EFFECT_ALLOW
+      roles:
+        - USER
+      condition:
+        match:
+          expr: R.attr.search.contains("letmein")
