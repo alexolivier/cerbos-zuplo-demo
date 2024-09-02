@@ -1,5 +1,19 @@
 {
   "policies": [
+
+    {
+      "handler": {
+        "export": "OpenIdJwtInboundPolicy",
+        "module": "$import(@zuplo/runtime)",
+        "options": {
+          "audience": "$env(AUTH_AUDIENCE)",
+          "issuer": "$env(AUTH_ISSUER)",
+          "secret": "your-256-bit-secret"
+        }
+      },
+      "name": "open-id-jwt-auth-inbound",
+      "policyType": "open-id-jwt-auth-inbound"
+    },
     {
       "handler": {
         "export": "default",
