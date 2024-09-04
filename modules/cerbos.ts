@@ -92,7 +92,7 @@ export default async function policy(
 
     if (includePolicyOutputs) {
       return HttpProblems.forbidden(request, context, {
-        outputs: includePolicyOutputs,
+        outputs: result.outputs,
       });
     }
 
