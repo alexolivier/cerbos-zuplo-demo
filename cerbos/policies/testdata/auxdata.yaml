@@ -1,8 +1,23 @@
 # yaml-language-server: $schema=https://api.cerbos.dev/latest/cerbos/policy/v1/TestFixture/AuxData.schema.json
 
 auxData:
-  validJWT:
+  userJwt:
     jwt:
-      iss: my.domain
-      aud: ["x", "y"]
-      myField: value
+      {
+        "sub": "regular-user",
+        "iss": "cerbos.cloud",
+        "aud": "cerbos.cloud",
+        "name": "Amy Adams",
+        "iat": 1725283725,
+        "roles": ["USER"],
+      }
+  adminJwt:
+    jwt:
+      {
+        "sub": "admin-user",
+        "iss": "cerbos.cloud",
+        "aud": "cerbos.cloud",
+        "name": "John Doe",
+        "iat": 1725283725,
+        "roles": ["ADMIN"],
+      }

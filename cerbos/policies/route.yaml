@@ -7,23 +7,24 @@ resourcePolicy:
   resource: "route"
   rules:
     - actions:
-        - "GET"
-        - "POST"
-        - "PATCH"
-        - "DELETE"
+        - invoke
       effect: EFFECT_ALLOW
       roles:
         - ADMIN
 
     - name: get-user-with-param
       actions:
-        - GET
+        - invoke
       effect: EFFECT_ALLOW
       roles:
         - USER
       condition:
         match:
-          expr: R.attr.search.contains("letmein")
+          all:
+            of:
+              - expr: R.attr.method == "GET"
+              - expr: R.attr.pathname == "/policies-test/secret"
+              - expr: R.attr.search.contains("letmein")
       output:
         when:
           conditionNotMet: |-

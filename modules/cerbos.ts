@@ -9,6 +9,9 @@ type CerbosOptionsType = {
   includePolicyOutputs?: boolean;
 };
 
+const RESOURCE_KIND = "route";
+const ACTION = "invoke";
+
 export default async function policy(
   request: ZuploRequest,
   context: ZuploContext,
@@ -53,8 +56,8 @@ export default async function policy(
       attr: {},
     },
     resource: {
-      kind: "route",
-      id: url.pathname,
+      kind: RESOURCE_KIND,
+      id: `${request.method}:${url.pathname}`,
       attr: {
         protocol: url.protocol,
         method: request.method,
@@ -64,16 +67,16 @@ export default async function policy(
         policyName,
       },
     },
-    actions: [request.method],
+    actions: [ACTION],
   };
 
   if (sendAuthorizationHeader) {
     const tokenHeader = request.headers.get("Authorization");
     if (tokenHeader) {
-      const tokenString = tokenHeader.split(" ")[1];
+      const token = tokenHeader.split(" ")[1];
       payload["auxData"] = {
         jwt: {
-          token: tokenString,
+          token,
         },
       };
     }
@@ -83,7 +86,7 @@ export default async function policy(
 
   const result = await cerbos.checkResource(payload);
 
-  if (!result.isAllowed(request.method)) {
+  if (!result.isAllowed(ACTION)) {
     context.log.error(
       `The user '${request.user.sub}' with roles ${roles.join(
         ", "

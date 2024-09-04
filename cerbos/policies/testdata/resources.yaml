@@ -3,7 +3,7 @@
 resources:
   basic:
     kind: route
-    id: get
+    id: "GET:/policies-test/secret"
     attr:
       policyName: cerbos-inbound
       protocol: "https:"
@@ -14,7 +14,7 @@ resources:
 
   withParams:
     kind: route
-    id: get-with-params
+    id: "GET:/policies-test/secret"
     attr:
       policyName: cerbos-inbound
       protocol: "https:"

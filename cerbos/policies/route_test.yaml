@@ -14,61 +14,46 @@ tests:
         - basic
         - withParams
       actions:
-        - GET
-        - POST
-        - PATCH
-        - DELETE
+        - invoke
     expected:
       - principal: admin
         resource: basic
         actions:
-          GET: EFFECT_ALLOW
-          POST: EFFECT_ALLOW
-          PATCH: EFFECT_ALLOW
-          DELETE: EFFECT_ALLOW
+          invoke: EFFECT_ALLOW
 
       - principal: admin
         resource: withParams
         actions:
-          GET: EFFECT_ALLOW
-          POST: EFFECT_ALLOW
-          PATCH: EFFECT_ALLOW
-          DELETE: EFFECT_ALLOW
+          invoke: EFFECT_ALLOW
 
       - principal: user
         resource: basic
         actions:
-          GET: EFFECT_DENY
-          POST: EFFECT_DENY
-          PATCH: EFFECT_DENY
-          DELETE: EFFECT_DENY
+          invoke: EFFECT_DENY
         outputs:
-          - action: GET
+          - action: invoke
             expected:
               - src: resource.route.vdefault#get-user-with-param
                 val:
                   {
                     "message": "Missing URL secret",
                     "principal": "user",
-                    "resource": "get",
+                    "resource": "GET:/policies-test/secret",
                     "timestamp": "2022-08-02T15:00:00Z",
                   }
 
       - principal: user
         resource: withParams
         actions:
-          GET: EFFECT_ALLOW
-          POST: EFFECT_DENY
-          PATCH: EFFECT_DENY
-          DELETE: EFFECT_DENY
+          invoke: EFFECT_ALLOW
         outputs:
-          - action: GET
+          - action: invoke
             expected:
               - src: resource.route.vdefault#get-user-with-param
                 val:
                   {
                     "message": "Bypass with URL secret",
                     "principal": "user",
-                    "resource": "get-with-params",
+                    "resource": "GET:/policies-test/secret",
                     "timestamp": "2022-08-02T15:00:00Z",
                   }
