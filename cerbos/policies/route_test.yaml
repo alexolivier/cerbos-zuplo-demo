@@ -1,0 +1,74 @@
+# yaml-language-server: $schema=https://api.cerbos.dev/latest/cerbos/policy/v1/TestSuite.schema.json
+
+name: Zuplo test suite
+options:
+  now: "2022-08-02T15:00:00Z"
+
+tests:
+  - name: Route test
+    input:
+      principals:
+        - admin
+        - user
+      resources:
+        - basic
+        - withParams
+      actions:
+        - GET
+        - POST
+        - PATCH
+        - DELETE
+    expected:
+      - principal: admin
+        resource: basic
+        actions:
+          GET: EFFECT_ALLOW
+          POST: EFFECT_ALLOW
+          PATCH: EFFECT_ALLOW
+          DELETE: EFFECT_ALLOW
+
+      - principal: admin
+        resource: withParams
+        actions:
+          GET: EFFECT_ALLOW
+          POST: EFFECT_ALLOW
+          PATCH: EFFECT_ALLOW
+          DELETE: EFFECT_ALLOW
+
+      - principal: user
+        resource: basic
+        actions:
+          GET: EFFECT_DENY
+          POST: EFFECT_DENY
+          PATCH: EFFECT_DENY
+          DELETE: EFFECT_DENY
+        outputs:
+          - action: GET
+            expected:
+              - src: resource.route.vdefault#get-user-with-param
+                val:
+                  {
+                    "message": "Missing URL secret",
+                    "principal": "user",
+                    "resource": "get",
+                    "timestamp": "2022-08-02T15:00:00Z",
+                  }
+
+      - principal: user
+        resource: withParams
+        actions:
+          GET: EFFECT_ALLOW
+          POST: EFFECT_DENY
+          PATCH: EFFECT_DENY
+          DELETE: EFFECT_DENY
+        outputs:
+          - action: GET
+            expected:
+              - src: resource.route.vdefault#get-user-with-param
+                val:
+                  {
+                    "message": "Bypass with URL secret",
+                    "principal": "user",
+                    "resource": "get-with-params",
+                    "timestamp": "2022-08-02T15:00:00Z",
+                  }

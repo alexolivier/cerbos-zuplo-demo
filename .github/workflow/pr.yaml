@@ -1,0 +1,23 @@
+---
+name: PR Check
+on:
+  pull_request:
+    branches:
+      - main
+jobs:
+  cerbosCheck:
+    name: Check Cerbos policies
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Setup Cerbos
+        uses: cerbos/cerbos-setup-action@v1
+        with:
+          version: latest
+
+      - name: Compile and test policies
+        uses: cerbos/cerbos-compile-action@v1
+        with:
+          policyDir: cerbos/policies

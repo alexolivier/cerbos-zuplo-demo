@@ -7,18 +7,16 @@ resourcePolicy:
   resource: "route"
   rules:
     - actions:
-        - "*"
-      effect: EFFECT_ALLOW
-      roles:
-        - DENY
-
-    - actions:
-        - GET
+        - "GET"
+        - "POST"
+        - "PATCH"
+        - "DELETE"
       effect: EFFECT_ALLOW
       roles:
         - ADMIN
 
-    - actions:
+    - name: get-user-with-param
+      actions:
         - GET
       effect: EFFECT_ALLOW
       roles:
@@ -26,3 +24,9 @@ resourcePolicy:
       condition:
         match:
           expr: R.attr.search.contains("letmein")
+      output:
+        when:
+          conditionNotMet: |-
+            {"principal": P.id, "resource": R.id, "timestamp": now(), "message": "Missing URL secret"}
+          ruleActivated: |-
+            {"principal": P.id, "resource": R.id, "timestamp": now(), "message": "Bypass with URL secret"}

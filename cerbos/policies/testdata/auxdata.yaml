@@ -1,0 +1,8 @@
+# yaml-language-server: $schema=https://api.cerbos.dev/latest/cerbos/policy/v1/TestFixture/AuxData.schema.json
+
+auxData:
+  validJWT:
+    jwt:
+      iss: my.domain
+      aud: ["x", "y"]
+      myField: value

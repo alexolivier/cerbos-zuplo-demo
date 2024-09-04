@@ -1,0 +1,24 @@
+# yaml-language-server: $schema=https://api.cerbos.dev/latest/cerbos/policy/v1/TestFixture/Resources.schema.json
+
+resources:
+  basic:
+    kind: route
+    id: get
+    attr:
+      policyName: cerbos-inbound
+      protocol: "https:"
+      search: ""
+      host: cerbos-demo-main-6fc6f1c.d2.zuplo.dev
+      method: GET
+      pathname: "/policies-test/secret"
+
+  withParams:
+    kind: route
+    id: get-with-params
+    attr:
+      policyName: cerbos-inbound
+      protocol: "https:"
+      search: "?hello=world&letmein"
+      host: cerbos-demo-main-6fc6f1c.d2.zuplo.dev
+      method: GET
+      pathname: "/policies-test/secret"
