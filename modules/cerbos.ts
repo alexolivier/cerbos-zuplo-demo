@@ -16,7 +16,7 @@ type CerbosOptionsType = {
   pdpUrl: string;
   defaultRole?: string;
   roleClaimName?: string;
-  sendJSONBody?: boolean;
+  sendJsonBody?: boolean;
   sendAuthorizationHeader?: boolean;
   includePolicyOutputs?: boolean;
 };
@@ -32,7 +32,7 @@ export default async function policy(
     pdpUrl,
     roleClaimName,
     sendAuthorizationHeader,
-    sendJSONBody,
+    sendJsonBody,
     includePolicyOutputs,
   } = options;
 
@@ -78,12 +78,8 @@ export default async function policy(
     addJwtToken(payload, request);
   }
 
-  if (sendJSONBody) {
-    try {
-      payload.resource.attr!.body = await request.json();
-    } catch (e) {
-      context.log.error(`Could not parse JSON body: ${e}`);
-    }
+  if (sendJsonBody) {
+    await addJsonBody(payload, request, context);
   }
 
   context.log.debug(`Cerbos request: ${JSON.stringify(payload)}`);
@@ -128,5 +124,17 @@ function addJwtToken(
   if (tokenHeader) {
     const token = tokenHeader.split(" ")[1];
     payload.auxData = { jwt: { token } };
+  }
+}
+
+async function addJsonBody(
+  payload: CheckResourceRequest,
+  request: ZuploRequest,
+  context: ZuploContext
+): Promise<void> {
+  try {
+    payload.resource.attr!.body = await request.json();
+  } catch (e) {
+    context.log.error(`Could not parse JSON body: ${e}`);
   }
 }

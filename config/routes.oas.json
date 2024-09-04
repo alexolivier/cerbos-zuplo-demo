@@ -29,6 +29,27 @@
           }
         },
         "operationId": "c0dd2d7f-1eb1-43df-9597-761f44b0d221"
+      },
+      "post": {
+        "summary": "New Route",
+        "description": "Lorem ipsum dolor sit amet, **consectetur adipiscing** elit, sed do `eiusmod tempor` incididunt ut labore et dolore magna aliqua.",
+        "x-zuplo-route": {
+          "corsPolicy": "none",
+          "handler": {
+            "export": "urlForwardHandler",
+            "module": "$import(@zuplo/runtime)",
+            "options": {
+              "baseUrl": "https://getting-started.zuplo.io"
+            }
+          },
+          "policies": {
+            "inbound": [
+              "open-id-jwt-auth-inbound",
+              "cerbos-inbound"
+            ]
+          }
+        },
+        "operationId": "0dd3ca8c-5fcc-4b0a-ba49-beed7d55354c"
       }
     }
   }

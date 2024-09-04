@@ -22,7 +22,7 @@
           "roleClaimName": "roles",
           "includePolicyOutputs": true,
           "sendAuthorizationHeader": true,
-          "sendJSONBody": true
+          "sendJsonBody": true
         }
       },
       "name": "cerbos-inbound",
