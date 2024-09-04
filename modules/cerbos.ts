@@ -16,6 +16,7 @@ type CerbosOptionsType = {
   pdpUrl: string;
   defaultRole?: string;
   roleClaimName?: string;
+  sendJSONBody?: boolean;
   sendAuthorizationHeader?: boolean;
   includePolicyOutputs?: boolean;
 };
@@ -31,6 +32,7 @@ export default async function policy(
     pdpUrl,
     roleClaimName,
     sendAuthorizationHeader,
+    sendJSONBody,
     includePolicyOutputs,
   } = options;
 
@@ -74,6 +76,14 @@ export default async function policy(
   // Add JWT token if required
   if (sendAuthorizationHeader) {
     addJwtToken(payload, request);
+  }
+
+  if (sendJSONBody) {
+    try {
+      payload.resource.attr!.body = await request.json();
+    } catch (e) {
+      context.log.error(`Could not parse JSON body: ${e}`);
+    }
   }
 
   context.log.debug(`Cerbos request: ${JSON.stringify(payload)}`);
