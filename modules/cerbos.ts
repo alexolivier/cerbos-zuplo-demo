@@ -1,6 +1,17 @@
-import { HttpProblems, ZuploContext, ZuploRequest } from "@zuplo/runtime";
+import {
+  HttpProblems,
+  ZuploContext,
+  ZuploRequest,
+  RequestGeneric,
+} from "@zuplo/runtime";
 import { HTTP as Cerbos } from "@cerbos/http";
+import type { CheckResourceRequest } from "@cerbos/core";
 
+// Define Cerbos constants
+const RESOURCE_KIND = "route";
+const ACTION = "invoke";
+
+// Define types
 type CerbosOptionsType = {
   pdpUrl: string;
   defaultRole?: string;
@@ -8,9 +19,6 @@ type CerbosOptionsType = {
   sendAuthorizationHeader?: boolean;
   includePolicyOutputs?: boolean;
 };
-
-const RESOURCE_KIND = "route";
-const ACTION = "invoke";
 
 export default async function policy(
   request: ZuploRequest,
@@ -26,6 +34,7 @@ export default async function policy(
     includePolicyOutputs,
   } = options;
 
+  // Check for authentication
   if (!request.user) {
     context.log.error(
       "Not authenticated - an authentication policy is required"
@@ -36,19 +45,11 @@ export default async function policy(
   const cerbos = new Cerbos(pdpUrl);
   const url = new URL(request.url);
 
-  let roles = [defaultRole];
-  if (roleClaimName) {
-    const roleClaim = request.user.data[roleClaimName];
-    if (roleClaim) {
-      if (Array.isArray(roleClaim)) {
-        roles = roleClaim;
-      } else {
-        roles = [JSON.stringify(roleClaim)];
-      }
-    }
-  }
+  // Determine user roles
+  const roles = determineUserRoles(request.user, roleClaimName, defaultRole);
 
-  const payload = {
+  // Prepare Cerbos payload
+  const payload: CheckResourceRequest = {
     requestId: context.requestId,
     principal: {
       id: request.user.sub,
@@ -70,20 +71,14 @@ export default async function policy(
     actions: [ACTION],
   };
 
+  // Add JWT token if required
   if (sendAuthorizationHeader) {
-    const tokenHeader = request.headers.get("Authorization");
-    if (tokenHeader) {
-      const token = tokenHeader.split(" ")[1];
-      payload["auxData"] = {
-        jwt: {
-          token,
-        },
-      };
-    }
+    addJwtToken(payload, request);
   }
 
   context.log.debug(`Cerbos request: ${JSON.stringify(payload)}`);
 
+  // Check resource with Cerbos
   const result = await cerbos.checkResource(payload);
 
   if (!result.isAllowed(ACTION)) {
@@ -93,14 +88,35 @@ export default async function policy(
       )} is not authorized by Cerbos`
     );
 
-    if (includePolicyOutputs) {
-      return HttpProblems.forbidden(request, context, {
-        outputs: result.outputs,
-      });
-    }
-
-    return HttpProblems.forbidden(request, context);
+    return includePolicyOutputs
+      ? HttpProblems.forbidden(request, context, { outputs: result.outputs })
+      : HttpProblems.forbidden(request, context);
   }
 
   return request;
+}
+
+// Helper functions
+function determineUserRoles(
+  user: ZuploRequest<RequestGeneric>["user"],
+  roleClaimName?: string,
+  defaultRole = "ANONYMOUS"
+): string[] {
+  if (!roleClaimName || !user) return [defaultRole];
+
+  const roleClaim = user.data[roleClaimName];
+  if (!roleClaim) return [defaultRole];
+
+  return Array.isArray(roleClaim) ? roleClaim : [JSON.stringify(roleClaim)];
+}
+
+function addJwtToken(
+  payload: CheckResourceRequest,
+  request: ZuploRequest
+): void {
+  const tokenHeader = request.headers.get("Authorization");
+  if (tokenHeader) {
+    const token = tokenHeader.split(" ")[1];
+    payload.auxData = { jwt: { token } };
+  }
 }
