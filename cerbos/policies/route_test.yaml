@@ -13,6 +13,7 @@ tests:
       resources:
         - basic
         - withParams
+        - withBodyParams
       actions:
         - invoke
     expected:
@@ -23,6 +24,11 @@ tests:
 
       - principal: admin
         resource: withParams
+        actions:
+          invoke: EFFECT_ALLOW
+
+      - principal: admin
+        resource: withBodyParams
         actions:
           invoke: EFFECT_ALLOW
 
@@ -55,5 +61,21 @@ tests:
                     "message": "Bypass with URL secret",
                     "principal": "user",
                     "resource": "GET:/policies-test/secret",
+                    "timestamp": "2022-08-02T15:00:00Z",
+                  }
+
+      - principal: user
+        resource: withBodyParams
+        actions:
+          invoke: EFFECT_ALLOW
+        outputs:
+          - action: invoke
+            expected:
+              - src: resource.route.vdefault#post-user-with-param
+                val:
+                  {
+                    "message": "Bypass with body secret",
+                    "principal": "user",
+                    "resource": "POST:/policies-test/secret",
                     "timestamp": "2022-08-02T15:00:00Z",
                   }

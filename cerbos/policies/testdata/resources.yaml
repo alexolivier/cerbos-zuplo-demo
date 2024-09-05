@@ -22,3 +22,17 @@ resources:
       host: cerbos-demo-main-6fc6f1c.d2.zuplo.dev
       method: GET
       pathname: "/policies-test/secret"
+
+  withBodyParams:
+    kind: route
+    id: "POST:/policies-test/secret"
+    attr:
+      policyName: cerbos-inbound
+      protocol: "https:"
+      search: "?hello=world&letmein"
+      host: cerbos-demo-main-6fc6f1c.d2.zuplo.dev
+      method: POST
+      pathname: "/policies-test/secret"
+      body:
+        hello: world
+        letmein: true
