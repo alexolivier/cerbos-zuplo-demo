@@ -4,7 +4,7 @@
   "author": "",
   "copyright": "",
   "scripts": {
-    "dev": "zup dev"
+    "dev": "zup dev --editor-port 9200"
   },
   "dependencies": {
     "@cerbos/http": "^0.19.1",

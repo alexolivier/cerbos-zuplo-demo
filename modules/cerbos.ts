@@ -133,7 +133,7 @@ async function addJsonBody(
   context: ZuploContext
 ): Promise<void> {
   try {
-    payload.resource.attr!.body = await request.json();
+    payload.resource.attr!.body = await request.clone().json();
   } catch (e) {
     context.log.error(`Could not parse JSON body: ${e}`);
   }
