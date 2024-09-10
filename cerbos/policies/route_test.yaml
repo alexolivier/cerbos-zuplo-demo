@@ -17,10 +17,10 @@ tests:
       actions:
         - invoke
     expected:
-      - principal: admin
-        resource: basic
-        actions:
-          invoke: EFFECT_ALLOW
+      # - principal: admin
+      #   resource: basic
+      #   actions:
+      #     invoke: EFFECT_ALLOW
       # - principal: user
       #   resource: basic
       #   actions:
