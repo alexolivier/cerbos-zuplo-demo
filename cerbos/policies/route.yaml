@@ -11,44 +11,44 @@ resourcePolicy:
       effect: EFFECT_ALLOW
       roles:
         - ADMIN
+        # - USER
+
+    - name: get-user-with-param
+      actions:
+        - invoke
+      effect: EFFECT_ALLOW
+      roles:
         - USER
+      condition:
+        match:
+          all:
+            of:
+              - expr: R.attr.method == "GET"
+              - expr: R.attr.pathname == "/policies-test/secret"
+              - expr: R.attr.search.contains("letmein")
+      output:
+        when:
+          conditionNotMet: |-
+            {"principal": P.id, "resource": R.id, "timestamp": now(), "message": "Missing URL secret"}
+          ruleActivated: |-
+            {"principal": P.id, "resource": R.id, "timestamp": now(), "message": "Bypass with URL secret"}
 
-    # - name: get-user-with-param
-    #   actions:
-    #     - invoke
-    #   effect: EFFECT_ALLOW
-    #   roles:
-    #     - USER
-    #   condition:
-    #     match:
-    #       all:
-    #         of:
-    #           - expr: R.attr.method == "GET"
-    #           - expr: R.attr.pathname == "/policies-test/secret"
-    #           - expr: R.attr.search.contains("letmein")
-    #   output:
-    #     when:
-    #       conditionNotMet: |-
-    #         {"principal": P.id, "resource": R.id, "timestamp": now(), "message": "Missing URL secret"}
-    #       ruleActivated: |-
-    #         {"principal": P.id, "resource": R.id, "timestamp": now(), "message": "Bypass with URL secret"}
-
-    # - name: post-user-with-param
-    #   actions:
-    #     - invoke
-    #   effect: EFFECT_ALLOW
-    #   roles:
-    #     - USER
-    #   condition:
-    #     match:
-    #       all:
-    #         of:
-    #           - expr: R.attr.method == "POST"
-    #           - expr: R.attr.pathname == "/policies-test/secret"
-    #           - expr: R.attr.body.letmein == true
-    #   output:
-    #     when:
-    #       conditionNotMet: |-
-    #         {"principal": P.id, "resource": R.id, "timestamp": now(), "message": "Missing body secret"}
-    #       ruleActivated: |-
-    #         {"principal": P.id, "resource": R.id, "timestamp": now(), "message": "Bypass with body secret"}
+    - name: post-user-with-param
+      actions:
+        - invoke
+      effect: EFFECT_ALLOW
+      roles:
+        - USER
+      condition:
+        match:
+          all:
+            of:
+              - expr: R.attr.method == "POST"
+              - expr: R.attr.pathname == "/policies-test/secret"
+              - expr: R.attr.body.letmein == true
+      output:
+        when:
+          conditionNotMet: |-
+            {"principal": P.id, "resource": R.id, "timestamp": now(), "message": "Missing body secret"}
+          ruleActivated: |-
+            {"principal": P.id, "resource": R.id, "timestamp": now(), "message": "Bypass with body secret"}

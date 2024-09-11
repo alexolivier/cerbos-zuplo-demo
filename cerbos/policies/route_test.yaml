@@ -12,81 +12,81 @@ tests:
         - user
       resources:
         - basic
-        # - withParams
-        # - withBodyParams
+        - withParams
+        - withBodyParams
       actions:
         - invoke
     expected:
       ## Passthrough
+      # - principal: admin
+      #   resource: basic
+      #   actions:
+      #     invoke: EFFECT_ALLOW
+      # - principal: user
+      #   resource: basic
+      #   actions:
+      #     invoke: EFFECT_ALLOW
+
+      # Real
       - principal: admin
         resource: basic
         actions:
           invoke: EFFECT_ALLOW
-      - principal: user
-        resource: basic
+
+      - principal: admin
+        resource: withParams
         actions:
           invoke: EFFECT_ALLOW
 
-      ## Real
-      # - principal: admin
-      #   resource: basic
-      #   actions:
-      #     invoke: EFFECT_ALLOW
+      - principal: admin
+        resource: withBodyParams
+        actions:
+          invoke: EFFECT_ALLOW
 
-      # - principal: admin
-      #   resource: withParams
-      #   actions:
-      #     invoke: EFFECT_ALLOW
+      - principal: user
+        resource: basic
+        actions:
+          invoke: EFFECT_DENY
+        outputs:
+          - action: invoke
+            expected:
+              - src: resource.route.vdefault#get-user-with-param
+                val:
+                  {
+                    "message": "Missing URL secret",
+                    "principal": "user",
+                    "resource": "GET:/policies-test/secret",
+                    "timestamp": "2022-08-02T15:00:00Z",
+                  }
 
-      # - principal: admin
-      #   resource: withBodyParams
-      #   actions:
-      #     invoke: EFFECT_ALLOW
+      - principal: user
+        resource: withParams
+        actions:
+          invoke: EFFECT_ALLOW
+        outputs:
+          - action: invoke
+            expected:
+              - src: resource.route.vdefault#get-user-with-param
+                val:
+                  {
+                    "message": "Bypass with URL secret",
+                    "principal": "user",
+                    "resource": "GET:/policies-test/secret",
+                    "timestamp": "2022-08-02T15:00:00Z",
+                  }
 
-      # - principal: user
-      #   resource: basic
-      #   actions:
-      #     invoke: EFFECT_DENY
-      #   outputs:
-      #     - action: invoke
-      #       expected:
-      #         - src: resource.route.vdefault#get-user-with-param
-      #           val:
-      #             {
-      #               "message": "Missing URL secret",
-      #               "principal": "user",
-      #               "resource": "GET:/policies-test/secret",
-      #               "timestamp": "2022-08-02T15:00:00Z",
-      #             }
-
-      # - principal: user
-      #   resource: withParams
-      #   actions:
-      #     invoke: EFFECT_ALLOW
-      #   outputs:
-      #     - action: invoke
-      #       expected:
-      #         - src: resource.route.vdefault#get-user-with-param
-      #           val:
-      #             {
-      #               "message": "Bypass with URL secret",
-      #               "principal": "user",
-      #               "resource": "GET:/policies-test/secret",
-      #               "timestamp": "2022-08-02T15:00:00Z",
-      #             }
-
-      # - principal: user
-      #   resource: withBodyParams
-      #   actions:
-      #     invoke: EFFECT_ALLOW
-      #   outputs:
-      #     - action: invoke
-      #       expected:
-      #         - src: resource.route.vdefault#post-user-with-param
-      #           val:
-      #             {
-      #               "message": "Bypass with body secret",
-      #               "principal": "user",
-      #               "resource": "POST:/policies-test/secret",
-      #               "timestamp": "2022-08-02T15:00:00Z",
-      #             }
+      - principal: user
+        resource: withBodyParams
+        actions:
+          invoke: EFFECT_ALLOW
+        outputs:
+          - action: invoke
+            expected:
+              - src: resource.route.vdefault#post-user-with-param
+                val:
+                  {
+                    "message": "Bypass with body secret",
+                    "principal": "user",
+                    "resource": "POST:/policies-test/secret",
+                    "timestamp": "2022-08-02T15:00:00Z",
+                  }
