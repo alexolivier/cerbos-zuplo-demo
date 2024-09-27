@@ -40,15 +40,15 @@ The options for this policy are specified below. All properties are optional unl
 
 ## Using the Policy
 
-This policy will send a request to the PDP for a `route` resource with the request details in the following structure:
+This policy will send a request to the PDP for a `route` resource and the `invoke` action with the request details in the following structure:
 
 ```json
 {
   "requestId": "request-id",
   "principal": {
-    "id": "alice",
+    "id": "jwt-sub",
     "policyVersion": "default",
-    "roles": ["employee"],
+    "roles": ["USER"],
     "attr": {}
   },
   "resources": [
