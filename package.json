@@ -7,8 +7,7 @@
     "dev": "zup dev --editor-port 9200"
   },
   "dependencies": {
-    "@cerbos/http": "^0.19.1",
-    "zuplo": "latest"
-  },
-  "devDependencies": {}
+    "@cerbos/http": "^0.28.1",
+    "zuplo": "^6.71.22"
+  }
 }
