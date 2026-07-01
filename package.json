@@ -4,7 +4,11 @@
   "author": "",
   "copyright": "",
   "scripts": {
-    "dev": "zup dev --editor-port 9200"
+    "dev": "zup dev --editor-port 9200",
+    "docs": "npm run dev --workspace docs"
+  },
+  "workspaces": {
+    "packages": ["docs"]
   },
   "dependencies": {
     "@cerbos/http": "^0.28.1",
